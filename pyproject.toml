@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "livekit-plugins-assemblyai-tts"
+version = "0.1.0"
+description = "AssemblyAI Streaming (WebSocket) TTS plugin for LiveKit Agents"
+requires-python = ">=3.10"
+dependencies = [
+    "livekit-agents~=1.8",
+    "aiohttp",
+]
+
+[tool.setuptools.packages.find]
+include = ["assemblyai_tts*"]
