@@ -19,7 +19,7 @@ The service is WebSocket-only: a session opens a socket, the server replies with
 `Generate` (append text), `Flush` (speak everything buffered and mark a boundary),
 and `Terminate` (flush the rest and close). Audio comes back as base64 `Audio`
 frames, each `Flush` is answered by a `FlushDone`, and `Terminate` is answered by a
-`Termination`. See the quickstart at https://assemblyai.com/docs/tts for details.
+`Termination`. See the quickstart at https://www.assemblyai.com/docs/tts/getting-started/quickstart for details.
 """
 
 from __future__ import annotations
@@ -49,8 +49,6 @@ from livekit.agents.voice.io import TimedString
 from .log import logger
 from .models import DEFAULT_LANGUAGE, DEFAULT_VOICE, TTSEncoding
 
-# Global endpoint; routes to the nearest region. For pinned data residency use
-# wss://streaming-tts.us.assemblyai.com/v1/ws or .eu. instead.
 DEFAULT_BASE_URL = "wss://streaming-tts.usw2.assemblyai.com/v1/ws/"
 
 NUM_CHANNELS = 1
