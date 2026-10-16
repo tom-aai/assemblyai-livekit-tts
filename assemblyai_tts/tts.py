@@ -47,9 +47,9 @@ from livekit.agents.utils import is_given
 from livekit.agents.voice.io import TimedString
 
 from .log import logger
-from .models import DEFAULT_LANGUAGE, DEFAULT_VOICE, TTSEncoding
+from .models import DEFAULT_LANGUAGE, DEFAULT_MODEL, DEFAULT_VOICE, TTSEncoding
 
-DEFAULT_BASE_URL = "wss://streaming-tts.usw2.assemblyai.com/v1/ws/"
+DEFAULT_BASE_URL = "wss://streaming-tts.use1.assemblyai.com/v1/ws/"
 
 NUM_CHANNELS = 1
 
@@ -65,6 +65,7 @@ _MIME_TYPES: dict[str, str] = {
 class _TTSOptions:
     voice: str
     language: str
+    model: str
     encoding: TTSEncoding
     sample_rate: int
     word_timestamps: bool
@@ -79,6 +80,7 @@ class _TTSOptions:
         params = {
             "voice": self.voice,
             "language": self.language,
+            "model": self.model,
             "sample_rate": self.sample_rate,
             "encoding": self.encoding,
             "word_boundaries": "true" if self.word_timestamps else "false",
@@ -92,6 +94,7 @@ class TTS(tts.TTS):
         *,
         voice: str = DEFAULT_VOICE,
         language: str = DEFAULT_LANGUAGE,
+        model: str = DEFAULT_MODEL,
         encoding: TTSEncoding = "pcm_s16le",
         sample_rate: int = 24000,
         word_timestamps: bool = False,
@@ -107,6 +110,8 @@ class TTS(tts.TTS):
             voice: Preset voice name, e.g. "jane". Voice and language must agree;
                 see https://assemblyai.com/docs/tts/voices.
             language: Spoken language, e.g. "english".
+            model: Streaming TTS model ID. Defaults to the latest model served by
+                the us-east-1 production host.
             encoding: Output audio encoding. Defaults to "pcm_s16le" (linear PCM),
                 which is the only encoding decoded as raw audio by LiveKit.
             sample_rate: Output sample rate in Hz. Defaults to 24000.
@@ -114,7 +119,8 @@ class TTS(tts.TTS):
                 them as an aligned transcript. Off by default.
             api_key: AssemblyAI API key. Falls back to the ASSEMBLYAI_API_KEY
                 environment variable.
-            base_url: WebSocket endpoint. Defaults to the global streaming-tts host.
+            base_url: WebSocket endpoint. Defaults to the us-east-1 production
+                streaming-tts host, which serves the latest models.
             http_session: An existing aiohttp session to reuse. One is created from
                 the LiveKit HTTP context if omitted.
             tokenizer: Sentence tokenizer used to split streamed LLM text into
@@ -148,6 +154,7 @@ class TTS(tts.TTS):
         self._opts = _TTSOptions(
             voice=voice,
             language=language,
+            model=model,
             encoding=encoding,
             sample_rate=sample_rate,
             word_timestamps=word_timestamps,
@@ -166,7 +173,7 @@ class TTS(tts.TTS):
 
     @property
     def model(self) -> str:
-        return "streaming-tts"
+        return self._opts.model
 
     @property
     def provider(self) -> str:

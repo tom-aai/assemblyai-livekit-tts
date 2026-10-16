@@ -23,3 +23,6 @@ TTSEncoding = Literal["pcm_s16le", "pcm_mulaw", "pcm_alaw"]
 # https://assemblyai.com/docs/tts/voices (voice and language must agree).
 DEFAULT_VOICE = "jane"
 DEFAULT_LANGUAGE = "english"
+
+# Default streaming TTS model served by the us-east-1 production host.
+DEFAULT_MODEL = "assemblyai-tts-mul-4brl-2026-10-12"
