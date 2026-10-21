@@ -49,7 +49,7 @@ from livekit.agents.voice.io import TimedString
 from .log import logger
 from .models import DEFAULT_LANGUAGE, DEFAULT_MODEL, DEFAULT_VOICE, TTSEncoding
 
-DEFAULT_BASE_URL = "wss://streaming-tts.use1.assemblyai.com/v1/ws/"
+DEFAULT_BASE_URL = "wss://tts.us.assemblyai.com/v1/ws/"
 
 NUM_CHANNELS = 1
 
@@ -111,7 +111,7 @@ class TTS(tts.TTS):
                 see https://assemblyai.com/docs/tts/voices.
             language: Spoken language, e.g. "english".
             model: Streaming TTS model ID. Defaults to the latest model served by
-                the us-east-1 production host.
+                the production host.
             encoding: Output audio encoding. Defaults to "pcm_s16le" (linear PCM),
                 which is the only encoding decoded as raw audio by LiveKit.
             sample_rate: Output sample rate in Hz. Defaults to 24000.
@@ -119,8 +119,8 @@ class TTS(tts.TTS):
                 them as an aligned transcript. Off by default.
             api_key: AssemblyAI API key. Falls back to the ASSEMBLYAI_API_KEY
                 environment variable.
-            base_url: WebSocket endpoint. Defaults to the us-east-1 production
-                streaming-tts host, which serves the latest models.
+            base_url: WebSocket endpoint. Defaults to the US production TTS host,
+                which serves the latest models.
             http_session: An existing aiohttp session to reuse. One is created from
                 the LiveKit HTTP context if omitted.
             tokenizer: Sentence tokenizer used to split streamed LLM text into
