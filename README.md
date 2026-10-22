@@ -368,6 +368,34 @@ To change the voice or language during a conversation, call
 `tts.update_options(voice_id=..., language=...)`. It applies from the next reply,
 which the plugin speaks on a new Streaming TTS session.
 
+## Voices
+
+Pass any of these to `assemblyai_tts.TTS(voice_id=...)` (or
+`tts.update_options(voice_id=...)`) using the **Slug**. Every voice speaks every
+`language`.
+
+| Name | Language (Accent) | Gender | Description | Slug |
+| --- | --- | --- | --- | --- |
+| Titus | US (American) | Male | A young man with a deep, low-pitched voice speaking American English. | `aai-titus` |
+| Ewald | US (American) | Male | A middle-aged man speaking American English at a fairly fast pace. | `aai-ewald` |
+| Audrey | US (American) | Female | A middle-aged woman with an even, steady intonation speaks American English. | `aai-audrey` |
+| Violet | US (American) | Female | A young woman with a balanced, natural, easy-to-listen-to voice speaking American English. | `aai-violet` |
+| Troy | UK (Scottish) | Male | A young man with a soft-spoken, deep, low-pitched voice and expressive intonation of Scottish English. | `aai-troy` |
+| Nash | UK (British) | Male | A middle-aged man speaking British English with a fairly even tone. | `aai-nash` |
+| Nancy | UK (British) | Female | A middle-aged woman speaking British English with a fairly even tone. | `aai-nancy` |
+| Carrie | UK (British) | Female | A middle-aged woman with a soft-spoken delivery in British English. | `aai-carrie` |
+| Isadora | Portuguese | Female | A young woman speaking Portuguese with a fairly warm tone. | `aai-isadora` |
+| Cloyd | English (UK) | Male | An older man with a high-pitched, fast-paced, energetic delivery in British English. | `aai-cloyd` |
+| Kyla | English | Female | A young woman speaking American English at a fast pace. | `aai-kyla` |
+| Steven | English (Australian) | Male | A middle-aged man speaking Australian English with a fairly even tone. | `aai-steven` |
+| April | English | Female | A young woman speaking American English at a fast pace. | `aai-april` |
+| Benton | English | Male | An older American man with an energetic delivery and expressive intonation, featuring a nasal quality. | `aai-benton` |
+| Francisco | Spanish (Spain) | Male | A middle-aged man speaking Spanish from Spain with an energetic delivery and soft-spoken, warm, rich tone. | `aai-franciscoborja` |
+| Eira | Spanish (Mexico) | Female | A young woman speaking Mexican Spanish with a high-pitched voice. | `aai-eira` |
+| Donatien | French | Male | A middle-aged man with a high-pitched, soft-spoken voice and expressive intonation. | `aai-donatien` |
+| Karin | German | Female | A middle-aged woman speaking German with energetic delivery, fast-paced and expressive intonation. | `aai-karin` |
+| Amerigo | Italian | Male | An energetic, high-pitched, expressive Italian male voice with dynamic intonation. | `aai-amerigo` |
+
 ## Need help?
 
 If you get stuck, contact our support team at
