@@ -17,7 +17,7 @@
 Example:
     from assemblyai_tts import TTS
 
-    session = AgentSession(tts=TTS(voice="jane", language="english"))
+    session = AgentSession(tts=TTS(voice_id="aai-jane", language="english"))
 """
 
 from .models import TTSEncoding

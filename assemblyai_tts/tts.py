@@ -47,7 +47,7 @@ from livekit.agents.utils import is_given
 from livekit.agents.voice.io import TimedString
 
 from .log import logger
-from .models import DEFAULT_LANGUAGE, DEFAULT_MODEL, DEFAULT_VOICE, TTSEncoding
+from .models import DEFAULT_LANGUAGE, DEFAULT_MODEL, DEFAULT_VOICE_ID, TTSEncoding
 
 DEFAULT_BASE_URL = "wss://tts.us.assemblyai.com/v1/ws/"
 
@@ -63,7 +63,7 @@ _MIME_TYPES: dict[str, str] = {
 
 @dataclass
 class _TTSOptions:
-    voice: str
+    voice_id: str
     language: str
     model: str
     encoding: TTSEncoding
@@ -78,7 +78,7 @@ class _TTSOptions:
 
     def ws_url(self) -> str:
         params = {
-            "voice": self.voice,
+            "voice_id": self.voice_id,
             "language": self.language,
             "model": self.model,
             "sample_rate": self.sample_rate,
@@ -88,11 +88,32 @@ class _TTSOptions:
         return f"{self.base_url}?{urlencode(params)}"
 
 
+def _resolve_voice_id(voice_id: NotGivenOr[str], voice: NotGivenOr[str]) -> str:
+    """Resolve the voice_id to connect with, honoring the deprecated `voice` arg.
+
+    Every voice is named by voice_id: preset and library voices as "aai-<name>"
+    (so "jane" is "aai-jane"), your own voices by UUID or slug. The old `voice`
+    argument took a bare preset/library name; map it to its voice_id and warn.
+    """
+    if is_given(voice_id):
+        return voice_id
+    if is_given(voice):
+        resolved = voice if voice.startswith("aai-") else f"aai-{voice}"
+        logger.warning(
+            "`voice` is deprecated; pass `voice_id` instead (e.g. voice_id=%r). "
+            "The TTS `voice` parameter is retired and a session that sends it is "
+            "refused with 3006. See https://assemblyai.com/docs/tts/voices",
+            resolved,
+        )
+        return resolved
+    return DEFAULT_VOICE_ID
+
+
 class TTS(tts.TTS):
     def __init__(
         self,
         *,
-        voice: str = DEFAULT_VOICE,
+        voice_id: NotGivenOr[str] = NOT_GIVEN,
         language: str = DEFAULT_LANGUAGE,
         model: str = DEFAULT_MODEL,
         encoding: TTSEncoding = "pcm_s16le",
@@ -103,11 +124,14 @@ class TTS(tts.TTS):
         http_session: aiohttp.ClientSession | None = None,
         tokenizer: NotGivenOr[tokenize.SentenceTokenizer] = NOT_GIVEN,
         text_pacing: tts.SentenceStreamPacer | bool = False,
+        voice: NotGivenOr[str] = NOT_GIVEN,
     ) -> None:
         """Create a new AssemblyAI streaming TTS instance.
 
         Args:
-            voice: Preset voice name, e.g. "jane". Voice and language must agree;
+            voice_id: Voice identifier. Preset and library voices are named
+                "aai-<name>" (the preset "jane" is "aai-jane"); your own voices
+                are named by their UUID or slug. Voice and language must agree;
                 see https://assemblyai.com/docs/tts/voices.
             language: Spoken language, e.g. "english".
             model: Streaming TTS model ID. Defaults to the latest model served by
@@ -127,6 +151,9 @@ class TTS(tts.TTS):
                 `Generate`/`Flush` requests. Defaults to the blingfire tokenizer.
             text_pacing: Stream pacer for the TTS. Pass True for the default pacer,
                 a SentenceStreamPacer instance, or False to disable.
+            voice: Deprecated alias for `voice_id` that takes a bare preset or
+                library name (e.g. "jane") and maps it to its voice_id. Pass
+                `voice_id` instead; `voice` is refused by the service.
         """
         super().__init__(
             capabilities=tts.TTSCapabilities(
@@ -152,7 +179,7 @@ class TTS(tts.TTS):
             )
 
         self._opts = _TTSOptions(
-            voice=voice,
+            voice_id=_resolve_voice_id(voice_id, voice),
             language=language,
             model=model,
             encoding=encoding,
@@ -182,12 +209,16 @@ class TTS(tts.TTS):
     def update_options(
         self,
         *,
-        voice: NotGivenOr[str] = NOT_GIVEN,
+        voice_id: NotGivenOr[str] = NOT_GIVEN,
         language: NotGivenOr[str] = NOT_GIVEN,
+        voice: NotGivenOr[str] = NOT_GIVEN,
     ) -> None:
-        """Update the voice and/or language used for subsequent synthesis."""
-        if is_given(voice):
-            self._opts.voice = voice
+        """Update the voice_id and/or language used for subsequent synthesis.
+
+        `voice` is a deprecated alias for `voice_id`; see the constructor.
+        """
+        if is_given(voice_id) or is_given(voice):
+            self._opts.voice_id = _resolve_voice_id(voice_id, voice)
         if is_given(language):
             self._opts.language = language
 

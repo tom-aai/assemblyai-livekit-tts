@@ -19,9 +19,11 @@ from typing import Literal
 # but are intended for telephony pipelines that expect those codecs.
 TTSEncoding = Literal["pcm_s16le", "pcm_mulaw", "pcm_alaw"]
 
-# The default preset voice from the quickstart. See the full catalog at
+# The default voice, named by voice_id. Preset and library voices are named
+# "aai-<name>" (the preset "jane" is "aai-jane"); your own voices are named by
+# their UUID or slug. See the full catalog at
 # https://assemblyai.com/docs/tts/voices (voice and language must agree).
-DEFAULT_VOICE = "jane"
+DEFAULT_VOICE_ID = "aai-jane"
 DEFAULT_LANGUAGE = "english"
 
 # Default streaming TTS model served by the production host.
